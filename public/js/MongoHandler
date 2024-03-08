@@ -1,0 +1,31 @@
+const { MongoClient } = require('mongodb');
+
+const uri = 'mongodb+srv://gerty:Password1@cluster0.vl5bcui.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+async function connectToDatabase() {
+  try {
+    await client.connect();
+    console.log('Connected to MongoDB Atlas cluster');
+    return client.db('test');
+  } catch (error) {
+    console.error('Error connecting to MongoDB Atlas cluster:', error);
+    throw error;
+  }
+}
+
+async function getAllData() {
+  const db = await connectToDatabase();
+  const collection = db.collection('testy');
+  return collection.find().toArray();
+}
+
+async function addData(data) {
+  const db = await connectToDatabase();
+  const collection = db.collection('testy');
+  return collection.insertOne(data);
+}
+
+// Call the functions like this
+getAllData().then(data => console.log(data)).catch(error => console.error(error));
+addData({ name: 'Example', value: 1 }).then(result => console.log(result)).catch(error => console.error(error));
